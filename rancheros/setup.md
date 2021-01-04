@@ -27,12 +27,31 @@ vi rancheros.yml
 
 2)構文をチェックする
 
-ros config  validate -i rancheros.yml
+sudo ros config validate -i rancheros.yml
 
 3)cloud-config.ymlへマージする
 
-ron config merge -i rancheros.yml
+sudo ros config merge -i rancheros.yml
 
 ```
 - (204) cloud-config.ymlファイルへの更新内容は、再起動後に有効になる。
 
+- (205) ファイルを追加するときは、cloud-config.ymlへwrite_filesを(203)の方法で追加する。例えば、ノートPCで蓋を閉めてもスリープしないようにするには、以下のようにする。
+```yml
+$ vi rancheros.yml
+
+write_files:
+- container: acpid
+  content: |
+    exit 0
+  owner: root
+  path: /etc/acpi/suspend.sh
+  permissions: "0644"
+
+$ sudo ros config validate -i rancheros.yml
+$ sudo ros config merge -i rancheros.yml
+
+再起動して有効にする。
+```
+
+- (206) cloud-config.ymlの内容を見るには、「ros config export」を使う。
